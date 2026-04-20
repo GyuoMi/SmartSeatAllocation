@@ -1,121 +1,131 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useEffect, useState } from 'react';
+import BookingForm from './components/BookingForm';
+import SessionDashboard from './components/SessionDashboard';
+import BookingsList from './components/BookingsList';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [participants, setParticipants] = useState([]);
+  const [sessions, setSessions] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('');
+
+  const API_BASE = 'http://localhost:5000/api';
+
+  const fetchParticipants = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/participants/unassigned`);
+      const data = await res.json();
+      setParticipants(data);
+    } catch (error) {
+      console.error('Error fetching participants:', error);
+    }
+  };
+
+  const fetchSessions = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/sessions`);
+      const data = await res.json();
+      setSessions(data);
+    } catch (error) {
+      console.error('Error fetching sessions:', error);
+    }
+  };
+
+  const fetchBookings = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/bookings`);
+      const data = await res.json();
+      setBookings(data);
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+    }
+  };
+
+  const refreshAllData = async () => {
+    await fetchParticipants();
+    await fetchSessions();
+    await fetchBookings();
+  };
+
+  useEffect(() => {
+    refreshAllData();
+  }, []);
+
+  const handleBooking = async (participantId, sessionId) => {
+    try {
+      const res = await fetch(`${API_BASE}/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ participantId, sessionId })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage(data.message);
+        setMessageType('success');
+        refreshAllData();
+      } else {
+        setMessage(data.message || 'Booking failed');
+        setMessageType('error');
+      }
+    } catch (error) {
+      console.error('Booking error:', error);
+      setMessage('Server error while creating booking');
+      setMessageType('error');
+    }
+  };
+
+  const handleDeleteBooking = async (bookingId) => {
+    try {
+      const res = await fetch(`${API_BASE}/bookings/${bookingId}`, {
+        method: 'DELETE'
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setMessage(data.message);
+        setMessageType('success');
+        refreshAllData();
+      } else {
+        setMessage(data.message || 'Failed to delete booking');
+        setMessageType('error');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      setMessage('Server error while deleting booking');
+      setMessageType('error');
+    }
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Smart Seat Allocation Platform</h1>
+        <p>Manage training session bookings with rule-based validation</p>
+      </header>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {message && (
+        <div className={`message-box ${messageType}`}>
+          {message}
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <div className="top-grid">
+        <BookingForm
+          participants={participants}
+          sessions={sessions}
+          onBook={handleBooking}
+        />
+
+        <SessionDashboard sessions={sessions} />
+      </div>
+
+      <BookingsList bookings={bookings} onDelete={handleDeleteBooking} />
+    </div>
+  );
 }
 
-export default App
+export default App;

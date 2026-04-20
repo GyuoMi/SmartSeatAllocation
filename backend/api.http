@@ -1,0 +1,48 @@
+# ==========================================
+# SMART SEAT ALLOCATION - API TESTS
+# ==========================================
+
+### 1. View Dashboard Data
+GET http://localhost:3000/api/sessions
+
+
+### 2. Get Unallocated Staff for Division A
+GET http://localhost:3000/api/participants?division=A
+
+
+### 3. Get Unallocated Staff for Division B
+GET http://localhost:3000/api/participants?division=B
+
+
+### 4. Allocate a Participant
+# Make sure to change the ID to someone who actually exists and is unallocated
+POST http://localhost:3000/api/allocate
+Content-Type: application/json
+
+{
+    "participantId": 8,
+    "sessionId": 1
+}
+
+
+### 5. TEST: The Double Booking Guard
+# Run this immediately after request #4. It should fail.
+POST http://localhost:3000/api/allocate
+Content-Type: application/json
+
+{
+    "participantId": 8,
+    "sessionId": 1
+}
+
+
+### 6. TEST: The Division Quota Guard
+# Try to add a 7th person from Division B into Session 1.
+# (Since your screenshot shows Div B already has 6, this should instantly fail).
+POST http://localhost:3000/api/allocate
+Content-Type: application/json
+
+{
+    "participantId": 35, 
+    "sessionId": 1
+}

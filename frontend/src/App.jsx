@@ -100,12 +100,35 @@ function App() {
     }
   };
 
+  const totalCapacity = sessions.reduce((sum, s) => sum + Number(s.capacity || 0), 0);
+  const totalBooked = sessions.reduce((sum, s) => sum + Number(s.total_booked || 0), 0);
+  const totalRemaining = sessions.reduce((sum, s) => sum + Number(s.remaining_seats || 0), 0);
+
   return (
     <div className="app-container">
       <header className="app-header">
         <h1>Smart Seat Allocation Platform</h1>
-        <p>Manage training session bookings with rule-based validation</p>
+        <p>Enterprise training allocation dashboard for rule-based seat management and session visibility.</p>
       </header>
+
+      <div className="summary-strip">
+        <div className="summary-card">
+          <div className="label">Total Capacity</div>
+          <div className="value">{totalCapacity}</div>
+        </div>
+        <div className="summary-card">
+          <div className="label">Total Booked</div>
+          <div className="value">{totalBooked}</div>
+        </div>
+        <div className="summary-card">
+          <div className="label">Remaining Seats</div>
+          <div className="value">{totalRemaining}</div>
+        </div>
+        <div className="summary-card">
+          <div className="label">Unassigned Participants</div>
+          <div className="value">{participants.length}</div>
+        </div>
+      </div>
 
       {message && (
         <div className={`message-box ${messageType}`}>
@@ -119,7 +142,6 @@ function App() {
           sessions={sessions}
           onBook={handleBooking}
         />
-
         <SessionDashboard sessions={sessions} />
       </div>
 

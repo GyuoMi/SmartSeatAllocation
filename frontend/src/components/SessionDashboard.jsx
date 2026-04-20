@@ -3,23 +3,51 @@ import React from 'react';
 function SessionDashboard({ sessions }) {
   return (
     <div className="card">
-      <h2>Session Overview</h2>
+      <div className="section-header">
+        <h2>Session Allocation Overview</h2>
+        <span className="section-subtext">Live seat and division allocation status</span>
+      </div>
 
       <div className="session-grid">
-        {sessions.map((session) => (
-          <div key={session.id} className="session-card">
-            <h3>{session.session_name}</h3>
-            <p><strong>Time:</strong> {session.time_slot}</p>
-            <p><strong>Booked:</strong> {session.total_booked}/{session.capacity}</p>
-            <p><strong>Remaining Seats:</strong> {session.remaining_seats}</p>
+        {sessions.map((session) => {
+          const percentFull = session.capacity
+            ? (Number(session.total_booked) / Number(session.capacity)) * 100
+            : 0;
 
-            <div className="division-stats">
-              <p>Division A: {session.division_a_count}/{session.division_a_limit}</p>
-              <p>Division B: {session.division_b_count}/{session.division_b_limit}</p>
-              <p>Division C: {session.division_c_count}/{session.division_c_limit}</p>
+          return (
+            <div key={session.id} className="session-card">
+              <h3>{session.session_name}</h3>
+
+              <div className="session-meta">
+                <p><strong>Time Slot:</strong> {session.time_slot}</p>
+                <p><strong>Capacity:</strong> {session.total_booked}/{session.capacity}</p>
+                <p><strong>Remaining:</strong> {session.remaining_seats} seats</p>
+              </div>
+
+              <div className="capacity-bar">
+                <div
+                  className="capacity-fill"
+                  style={{ width: `${percentFull}%` }}
+                ></div>
+              </div>
+
+              <div className="division-stats">
+                <div className="division-row">
+                  <span className="badge badge-a">Division A</span>
+                  <span>{session.division_a_count}/{session.division_a_limit}</span>
+                </div>
+                <div className="division-row">
+                  <span className="badge badge-b">Division B</span>
+                  <span>{session.division_b_count}/{session.division_b_limit}</span>
+                </div>
+                <div className="division-row">
+                  <span className="badge badge-c">Division C</span>
+                  <span>{session.division_c_count}/{session.division_c_limit}</span>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

@@ -3,18 +3,21 @@ import React from 'react';
 function BookingsList({ bookings, onDelete }) {
   return (
     <div className="card">
-      <h2>Current Bookings</h2>
+      <div className="section-header">
+        <h2>Booking Register</h2>
+        <span className="section-subtext">Current confirmed participant allocations</span>
+      </div>
 
       {bookings.length === 0 ? (
-        <p>No bookings have been made yet.</p>
+        <div className="empty-state">No bookings have been recorded yet.</div>
       ) : (
         <div className="table-wrapper">
           <table>
             <thead>
               <tr>
                 <th>Participant</th>
-                <th>Employee No.</th>
-                <th>Department</th>
+                <th>Employee Number</th>
+                <th>Division</th>
                 <th>Session</th>
                 <th>Time Slot</th>
                 <th>Action</th>

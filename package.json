@@ -1,0 +1,24 @@
+{
+  "name": "smartseatallocation",
+  "version": "1.0.0",
+  "description": "Smart Seat Allocation Platform that helps assign participants to training sessions automatically.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GyuoMi/SmartSeatAllocation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/GyuoMi/SmartSeatAllocation/issues"
+  },
+  "homepage": "https://github.com/GyuoMi/SmartSeatAllocation#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
